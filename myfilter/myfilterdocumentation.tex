@@ -1,0 +1,151 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass[10pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+
+\usepackage{graphicx} % support the \includegraphics command and options
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+%%% Document starts here
+\title{Technische Dokumentation für \texttt{myfiltermain}}
+\author{Stefanie Schatz}
+\date{} % Deaktiviert, da kein Datum erforderlich ist
+
+\begin{document}
+\maketitle
+
+\section{Einführung}
+Das Programm \texttt{myfiltermain} dient zur Verarbeitung von Textdateien. Es kann eine angegebene oder automatisch erkannte Textdatei öffnen und verschiedene statistische Informationen über deren Inhalt ausgeben: die Anzahl der Zeichen, Wörter oder Zeilen. 
+
+In dieser Dokumentation wird die Beispieltextdatei \texttt{7zara10} verwendet, um die Funktionsweise des Programms zu verdeutlichen.
+
+\section{Funktionen und Aufbau}
+\subsection{Hauptfunktionen}
+Das Programm \texttt{myfiltermain} ist modular aufgebaut und besteht aus folgenden Kernfunktionen:
+\begin{itemize}
+    \item \texttt{usage()}: Zeigt die richtige Nutzung des Programms an und informiert über die verfügbaren Optionen.
+    \item \texttt{find\_first\_textfile()}: Durchsucht das aktuelle Verzeichnis und gibt die erste gefundene Textdatei zurück.
+    \item \texttt{count\_characters()}: Zählt die Anzahl der Zeichen in einer Datei.
+    \item \texttt{count\_words()}: Zählt die Anzahl der Wörter in einer Datei.
+    \item \texttt{count\_lines()}: Zählt die Anzahl der Zeilen in einer Datei.
+\end{itemize}
+
+\subsection{Kommandozeilenargumente}
+Das Programm unterstützt folgende Optionen:
+\begin{itemize}
+    \item \texttt{-i}: Gibt den Pfad zu einer spezifischen Textdatei an (z. B. \texttt{7zara10}).
+    \item \texttt{-c}: Zählt die Zeichen in der angegebenen Datei.
+    \item \texttt{-w}: Zählt die Wörter in der angegebenen Datei.
+    \item \texttt{-l}: Zählt die Zeilen in der angegebenen Datei.
+\end{itemize}
+
+Wenn keine Datei mit \texttt{-i} angegeben wird, versucht das Programm, automatisch die erste Textdatei (z. B. \texttt{7zara10}) im aktuellen Verzeichnis zu ermitteln.
+
+\section{Implementierung}
+\subsection{Hauptprogramm}
+Die \texttt{main()}-Funktion von \texttt{myfiltermain} verarbeitet die Kommandozeilenargumente und führt die entsprechenden Operationen aus:
+\begin{enumerate}
+    \item \textbf{Argumente parsen}: Mit \texttt{getopt()} werden die Optionen \texttt{-i}, \texttt{-c}, \texttt{-w} und \texttt{-l} verarbeitet.
+    \item \textbf{Standard-Textdatei verwenden}: Wenn keine Datei mit \texttt{-i} angegeben wird, sucht \texttt{find\_first\_textfile()} automatisch nach der ersten \texttt{.txt}-Datei, z. B. \texttt{7zara10}.
+    \item \textbf{Funktionen aufrufen}: Je nach ausgewählter Option (\texttt{-c}, \texttt{-w}, \texttt{-l}) wird die entsprechende Funktion aufgerufen, und das Ergebnis wird in der Standardausgabe ausgegeben.
+\end{enumerate}
+
+\subsection{Hilfsfunktionen}
+\begin{itemize}
+    \item \texttt{find\_first\_textfile()}: Diese Funktion durchsucht das aktuelle Verzeichnis nach Dateien mit der Endung \texttt{.txt} und gibt den Namen der ersten gefundenen Datei zurück.
+    \item \texttt{count\_characters()}: Diese Funktion zählt die Anzahl aller Zeichen, einschließlich Leerzeichen und Sonderzeichen.
+    \item \texttt{count\_words()}: Die Funktion erkennt Wörter anhand von Leerzeichen, Bindestrichen und Apostrophen und zählt sie.
+    \item \texttt{count\_lines()}: Diese Funktion zählt alle Zeilenumbrüche in der Datei und berücksichtigt auch die letzte Zeile, falls kein abschließender Zeilenumbruch vorhanden ist.
+\end{itemize}
+
+\section{Beispielausführung}
+\subsection{Nutzung}
+\begin{enumerate}
+    \item \textbf{Zeichen zählen}:
+    \begin{verbatim}
+    ./myfiltermain -i 7zara10 -c
+    \end{verbatim}
+    Ausgabe:
+    \begin{verbatim}
+    Anzahl der Zeichen in 7zara10: 1250
+    \end{verbatim}
+
+    \item \textbf{Wörter zählen}:
+    \begin{verbatim}
+    ./myfiltermain -i 7zara10 -w
+    \end{verbatim}
+    Ausgabe:
+    \begin{verbatim}
+    Anzahl der Wörter in 7zara10: 245
+    \end{verbatim}
+
+    \item \textbf{Zeilen zählen}:
+    \begin{verbatim}
+    ./myfiltermain -i 7zara10 -l
+    \end{verbatim}
+    Ausgabe:
+    \begin{verbatim}
+    Anzahl der Zeilen in 7zara10: 50
+    \end{verbatim}
+
+    \item \textbf{Ohne Angabe einer Datei}:
+    \begin{verbatim}
+    ./myfiltermain -c
+    \end{verbatim}
+    Das Programm durchsucht das aktuelle Verzeichnis und wählt automatisch die Datei \texttt{7zara10}:
+    \begin{verbatim}
+    Anzahl der Zeichen in 7zara10: 1250
+    \end{verbatim}
+\end{enumerate}
+
+\subsection{Automatische Dateiauswahl}
+Wenn keine Datei mit \texttt{-i} angegeben wird, wählt das Programm automatisch \texttt{7zara10}, sofern diese die erste gefundene \texttt{.txt}-Datei ist.
+
+\section{Fehlerbehandlung}
+\begin{itemize}
+    \item \textbf{Ungültige Datei}: Wenn die angegebene Datei nicht existiert, wird eine Fehlermeldung angezeigt:
+    \begin{verbatim}
+    Fehler beim Öffnen der Datei
+    \end{verbatim}
+    \item \textbf{Keine \texttt{.txt}-Datei gefunden}: Wenn im Verzeichnis keine \texttt{.txt}-Datei vorhanden ist, wird dies gemeldet:
+    \begin{verbatim}
+    Keine Textdatei gefunden!
+    \end{verbatim}
+    \item \textbf{Falsche Argumente}: Bei unzulässigen oder fehlenden Argumenten zeigt die \texttt{usage()}-Funktion die korrekten Optionen an:
+    \begin{verbatim}
+    Usage: ./myfiltermain [-i "Dateiname"] [-c] [-w] [-l]
+    \end{verbatim}
+\end{itemize}
+
+\section{Fazit}
+Das Programm \texttt{myfiltermain} bietet eine einfache, aber leistungsstarke Möglichkeit, grundlegende Statistiken über Textdateien zu berechnen. Die Implementierung ist modular und leicht wartbar, was eine einfache Anpassung und Erweiterung ermöglicht.
+
+\end{document}

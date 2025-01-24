@@ -1,0 +1,7 @@
+Das ist eine kleine Textdatei
+Sie enthält Wörter,
+Zahlen, Zeilen und Zeichen.
+4*2=8
+ÄäÖöÜü
+487 $
+Datum: 13.01.2025
