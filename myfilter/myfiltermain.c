@@ -6,20 +6,19 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-//Globale Variable für den Dateinamen
-char *filename=NULL;
-
-//Funktion Deklaration:
+// Funktionsdeklarationen:
 void usage(const char *prog_name);
 char* find_first_textfile();
 int count_characters(const char *filename);
 int count_words(const char *filename);
 int count_lines(const char *filename);
 int file_exists(const char *filename);
+void set_filename(char **filename, const char *new_filename);
 
-//Main:
-int main(int argc, char *argv[]){
+// Main:
+int main(int argc, char *argv[]) {
     int opt;
+    char *filename = NULL; // Lokale Variable für den Dateinamen
 
     // Überprüfen, ob keine Argumente übergeben wurden
     if (argc == 1) {
@@ -32,7 +31,7 @@ int main(int argc, char *argv[]){
             case 'i':
                 // Überprüfen, ob die angegebene Datei existiert
                 if (file_exists(optarg)) {
-                    set_filename(optarg);
+                    set_filename(&filename, optarg);
                     printf("Es wurde auf die Datei '%s' gewechselt.\n", filename);
                 } else {
                     printf("Fehler: Die Datei '%s' wurde nicht gefunden. Es wird bei der aktuellen Datei geblieben.\n", optarg);
@@ -83,13 +82,15 @@ int main(int argc, char *argv[]){
         }
     }
 
+    // Speicher freigeben, falls eine Datei geöffnet wurde
+    if (filename != NULL) {
+        free(filename);
+    }
 
     return 0;
 }
 
-//Function definition:
-
-//"Usage" Ausgabe bei keinem oder ungültigem Eingabeparameter
+// Funktion "Usage" Ausgabe bei keinem oder ungültigem Eingabeparameter
 void usage(const char *prog_name) {
     printf("Usage: %s [-i \"Dateiname\" Textdatei wechseln] [-c Zähle alle Zeichen] [-w Zähle alle Wörter] [-l Zähle alle Zeilen]\n", prog_name);
     printf("Wenn kein Dateiname angegeben wird, wird die erste Textdatei aus deinem Verzeichnis eingelesen.\n");
@@ -100,6 +101,14 @@ void usage(const char *prog_name) {
 int file_exists(const char *filename) {
     struct stat buffer;
     return (stat(filename, &buffer) == 0); // Gibt 0 zurück, wenn die Datei existiert
+}
+
+// Funktion zur Setzung des Dateinamens
+void set_filename(char **filename, const char *new_filename) {
+    if (*filename != NULL) {
+        free(*filename);  // Vorherigen Speicher freigeben, falls erforderlich
+    }
+    *filename = strdup(new_filename);  // Den neuen Dateinamen speichern
 }
 
 // Funktion, um die erste Textdatei im aktuellen Verzeichnis zu finden
@@ -123,7 +132,7 @@ char* find_first_textfile() {
     return NULL;  // Keine Textdatei gefunden
 }
 
-//Zeichen zählen
+// Funktion zur Zählung der Zeichen
 int count_characters(const char *filename) {
     FILE *file = fopen(filename, "r"); // Datei im Lesemodus öffnen
     if (file == NULL) {
@@ -143,7 +152,7 @@ int count_characters(const char *filename) {
     return count;
 }
 
-//Zähle Wörter
+// Funktion zur Zählung der Wörter
 int count_words(const char *filename) {
     FILE *file = fopen(filename, "r"); // Datei im Lesemodus öffnen
     if (file == NULL) {
@@ -186,7 +195,7 @@ int count_words(const char *filename) {
     return word_count;
 }
 
-//Zähle Zeilen
+// Funktion zur Zählung der Zeilen
 int count_lines(const char *filename) {
     FILE *file = fopen(filename, "r"); // Datei im Lesemodus öffnen
     if (file == NULL) {
