@@ -4,6 +4,10 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/stat.h>
+
+//Globale Variable für den Dateinamen
+char *filename=NULL;
 
 //Funktion Deklaration:
 void usage(const char *prog_name);
@@ -11,11 +15,11 @@ char* find_first_textfile();
 int count_characters(const char *filename);
 int count_words(const char *filename);
 int count_lines(const char *filename);
+int file_exists(const char *filename);
 
 //Main:
 int main(int argc, char *argv[]){
     int opt;
-    char *filename=NULL;
 
     // Überprüfen, ob keine Argumente übergeben wurden
     if (argc == 1) {
@@ -26,7 +30,13 @@ int main(int argc, char *argv[]){
     while ((opt = getopt(argc, argv, "i:cwl")) != -1) {
         switch (opt) {
             case 'i':
-                filename = optarg;  // Der Wert nach -i ist der Dateiname
+                // Überprüfen, ob die angegebene Datei existiert
+                if (file_exists(optarg)) {
+                    set_filename(optarg);
+                    printf("Es wurde auf die Datei '%s' gewechselt.\n", filename);
+                } else {
+                    printf("Fehler: Die Datei '%s' wurde nicht gefunden. Es wird bei der aktuellen Datei geblieben.\n", optarg);
+                }
                 break;
             case 'c':
                 if (filename == NULL) {
@@ -36,35 +46,32 @@ int main(int argc, char *argv[]){
                         return 1;
                     }
                 }
-
                 int char_count = count_characters(filename);
                 if (char_count >= 0) {
                     printf("Anzahl der Zeichen in %s: %d\n", filename, char_count);
                 }
                 break;
             case 'w':
-            if (filename == NULL) {
+                if (filename == NULL) {
                     filename = find_first_textfile(); // Standard-Textdatei verwenden
                     if (filename == NULL) {
                         printf("Keine Textdatei gefunden!\n");
                         return 1;
                     }
                 }
-
                 int word_count = count_words(filename);
                 if (word_count >= 0) {
                     printf("Anzahl der Wörter in %s: %d\n", filename, word_count);
                 }
                 break;
             case 'l':
-            if (filename == NULL) {
+                if (filename == NULL) {
                     filename = find_first_textfile(); // Standard-Textdatei verwenden
                     if (filename == NULL) {
                         printf("Keine Textdatei gefunden!\n");
                         return 1;
                     }
                 }
-
                 int line_count = count_lines(filename);
                 if (line_count >= 0) {
                     printf("Anzahl der Zeilen in %s: %d\n", filename, line_count);
@@ -85,7 +92,14 @@ int main(int argc, char *argv[]){
 //"Usage" Ausgabe bei keinem oder ungültigem Eingabeparameter
 void usage(const char *prog_name) {
     printf("Usage: %s [-i \"Dateiname\" Textdatei wechseln] [-c Zähle alle Zeichen] [-w Zähle alle Wörter] [-l Zähle alle Zeilen]\n", prog_name);
+    printf("Wenn kein Dateiname angegeben wird, wird die erste Textdatei aus deinem Verzeichnis eingelesen.\n");
     exit(1);
+}
+
+// Funktion, um zu überprüfen, ob eine Datei existiert
+int file_exists(const char *filename) {
+    struct stat buffer;
+    return (stat(filename, &buffer) == 0); // Gibt 0 zurück, wenn die Datei existiert
 }
 
 // Funktion, um die erste Textdatei im aktuellen Verzeichnis zu finden
