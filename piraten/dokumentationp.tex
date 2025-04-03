@@ -1,0 +1,88 @@
+\documentclass[10pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+
+\usepackage{graphicx} % support the \includegraphics command and options
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{geometry}
+
+\geometry{
+  a4paper,         % Papierformat
+  left=2cm,      % linker Rand
+  right=2cm,     % rechter Rand
+  top=3cm,       % oberer Rand
+  bottom=3cm,    % unterer Rand
+  headheight=15pt, % Höhe des Kopfes
+  headsep=25pt,    % Abstand zwischen Kopf und Text
+  footskip=30pt    % Abstand zwischen Fußzeile und Text
+}
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+
+%%% TITLE & HEADER
+\usepackage{titlesec}
+\titleformat{\section}[block]{\normalfont\bfseries\fontsize{11}{13}\selectfont}{\thesection}{1em}{}
+\titleformat{\subsection}[block]{\normalfont\bfseries\fontsize{10}{12}\selectfont}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}[block]{\normalfont\bfseries\fontsize{9}{11}\selectfont}{\thesubsubsection}{1em}{}
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+%%% Document starts here
+\title{Technische Dokumentation zur Piratenjagd-Simulation: Vergleich der Berechnungszeit zwischen C und Python}
+\author{Stefanie Schatz}
+\date{} % Deaktiviert, da kein Datum erforderlich ist
+
+\begin{document}
+\maketitle
+
+\section{Einführung}
+Die Piratenjagd-Simulation berechnet, wie ein Piratenschiff ein Handelsschiff einholt, wenn das Handelsschiff mit konstanter Geschwindigkeit in einer geraden Linie segelt, während das Piratenschiff kontinuierlich seine Richtung ändert, um das Handelsschiff zu verfolgen. 
+
+Die Berechnung und Simulation der Schiffspostionen wurde zuerst in C implementiert, da C im Allgemeinen eine höhere Rechenleistung und Geschwindigkeit bietet. Danach wurde eine Python-Version der Simulation erstellt, wobei eine Visualisierung der Berechnungen mit \texttt{matplotlib} vorgenommen wird. In dieser Dokumentation wird insbesondere der Unterschied in der Berechnungszeit zwischen der C- und der Python-Version hervorgehoben.
+
+\section{Vergleich der Berechnungszeiten: C vs. Python}
+Ein zentrales Ziel der Simulation ist es, die Zeit zu berechnen, die das Piratenschiff benötigt, um das Handelsschiff zu fangen. In beiden Versionen (C und Python) werden die Positionen der Schiffe in kleinen Zeitintervallen (\( dt \)) aktualisiert, und die Berechnungen laufen iterativ, bis das Piratenschiff das Handelsschiff erreicht.
+
+\subsection{Berechnungen in C}
+Die C-Version ist für ihre hohe Ausführungsgeschwindigkeit bekannt, da sie direkten Zugriff auf die Hardware und effiziente Nutzung von Speicher und Prozessorressourcen hat. In C erfolgt die Berechnung der Schiffspostionen und der Verfolgungslogik in sehr kleinen Zeitintervallen (\( dt \)) sehr schnell, was zu einer kurzen Gesamtberechnungszeit führt.
+
+Die Berechnung wird auf einem Standard-Desktop-Rechner in der Größenordnung von Millisekunden durchgeführt, selbst für sehr kleine \( \epsilon \)-Werte (d.h. für eine sehr präzise Berechnung). Dies macht C besonders geeignet für simulationslastige Anwendungen, bei denen Geschwindigkeit entscheidend ist.
+
+\subsection{Berechnungen in Python}
+Im Vergleich dazu ist Python eine interpretierte Sprache und benötigt mehr Zeit, um Berechnungen durchzuführen, da sie nicht so nahe an der Hardware arbeitet wie C. Die Python-Version der Simulation hat eine merklich längere Berechnungszeit, besonders bei sehr kleinen \( \epsilon \)-Werten. Python führt zusätzliche Zwischenschritte aus, die zu einer höheren Rechenzeit führen, insbesondere bei aufwendigen Iterationen.
+
+Zusätzlich hat Python eine nützliche Bibliothek \texttt{matplotlib}, mit der die Simulation visuell dargestellt werden kann. Die Möglichkeit, die Bewegung der Schiffe in einer Animation darzustellen, hilft, das Verhalten der Simulation besser zu verstehen, was mit reinem C-Code nicht so einfach möglich wäre.
+
+\section{Graphische Darstellung und Animation der Simulation}
+Die Berechnungen der Schiffspostionen werden zuerst in C durchgeführt, um die Zeit und Position zu ermitteln, an denen das Piratenschiff das Handelsschiff einholt. Danach werden die berechneten Daten in eine Datei geschrieben, die von Python eingelesen und mit \texttt{matplotlib} visualisiert wird.
+
+Die Visualisierung erfolgt durch eine animierte Darstellung der Schiffe, wobei die Positionen der Schiffe über die Zeit hinweg aktualisiert und geplottet werden. Die Animation wird durch eine Schleife realisiert, die das Plot-Fenster kontinuierlich aktualisiert. Dies ermöglicht eine direkte Kontrolle über die Darstellung und sorgt für eine flüssige Animation.
+
+\section{Zusammenfassung}
+Die Piratenjagd-Simulation in C läuft deutlich schneller als die Python-Version, was vor allem an den Unterschieden in der Ausführungsgeschwindigkeit der beiden Programmiersprachen liegt. Während C eine schnelle und effiziente Berechnung ermöglicht, ist Python aufgrund seiner Interpreter-Natur langsamer und benötigt mehr Zeit, um die gleichen Berechnungen durchzuführen. 
+
+Die Kombination beider Ansätze – schnelle Berechnung in C und anschauliche Visualisierung in Python – ermöglicht eine umfassende Analyse des Problems. Während C für simulationslastige Anwendungen mit hohen Leistungsanforderungen ideal ist, bietet Python durch seine Visualisierungsmöglichkeiten eine anschauliche und intuitive Darstellung der Abläufe.
+
+\end{document}
